@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyNotes - Deine persönliche Notizen-App</title>
+    <title>Schach</title>
     <style>
         * {
             margin: 0;
@@ -12,871 +12,618 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-        }
-
-        .app-container {
-            display: flex;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            margin: 20px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: rgba(255, 255, 255, 0.8);
-            border-right: 1px solid rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .sidebar h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .folder-list {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-
-        .folder-item {
-            padding: 12px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .folder-item:hover {
-            background: rgba(103, 126, 234, 0.1);
-        }
-
-        .folder-item.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .folder-icon {
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        .note-count {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-
-        .add-folder-btn {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 2px dashed #ccc;
-            border-radius: 12px;
-            cursor: pointer;
-            color: #666;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .add-folder-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            padding: 20px 30px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .search-container {
-            flex: 1;
-            margin-right: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 25px;
-            font-size: 16px;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.1);
-        }
-
-        .add-note-btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(103, 126, 234, 0.3);
-        }
-
-        .add-note-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(103, 126, 234, 0.4);
-        }
-
-        /* Notes List */
-        .notes-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 30px;
-        }
-
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .note-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .note-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .note-content {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: #999;
-        }
-
-        .note-tags {
-            display: flex;
-            gap: 5px;
-        }
-
-        .tag {
-            background: #667eea;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 10px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .modal-content {
-            background: white;
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 100%;
         }
 
-        .modal-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid #eee;
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .modal-body {
-            padding: 30px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        .input-group {
             margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
         }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
+        .current-player {
+            font-size: 1.2em;
+            font-weight: bold;
             color: #333;
         }
 
-        .input-group input,
-        .input-group textarea {
+        .game-status {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .chessboard {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(103, 126, 234, 0.1);
-        }
-
-        .input-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* Canvas */
-        .canvas-container {
-            border: 2px solid #eee;
-            border-radius: 12px;
-            margin: 20px 0;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 4px solid #8B4513;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .canvas-toolbar {
-            background: #f5f5f5;
-            padding: 10px;
+        .board-row {
             display: flex;
-            gap: 10px;
+            width: 100%;
+        }
+
+        .square {
+            width: 12.5%;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
             align-items: center;
-        }
-
-        .tool-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
+            font-size: 2em;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .tool-btn.active {
-            background: #667eea;
-            color: white;
+        .square.light {
+            background-color: #f0d9b5;
         }
 
-        #drawingCanvas {
-            display: block;
-            cursor: crosshair;
-            background: white;
+        .square.dark {
+            background-color: #b58863;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
+        .square:hover {
+            transform: scale(1.05);
+            z-index: 1;
+        }
+
+        .square.selected {
+            background-color: #ffff00 !important;
+            box-shadow: inset 0 0 0 3px #ff6b6b;
+        }
+
+        .square.valid-move {
+            background-color: #90EE90 !important;
+        }
+
+        .square.in-check {
+            background-color: #ff6b6b !important;
+        }
+
+        .piece {
+            user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        .piece:hover {
+            transform: scale(1.1);
+        }
+
+        .controls {
             margin-top: 20px;
+            text-align: center;
         }
 
         .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-        }
-
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #666;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-            padding: 5px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
+        .move-history {
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            padding: 15px;
         }
 
-        .close-btn:hover {
-            background: #f5f5f5;
+        .move-history h3 {
+            margin-bottom: 10px;
             color: #333;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .app-container {
-                margin: 10px;
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            }
-            
-            .notes-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
+        .move-list {
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
             color: #666;
         }
 
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            font-size: 16px;
-            opacity: 0.8;
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .square {
+                font-size: 1.5em;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h2>📝 MyNotes</h2>
-            
-            <ul class="folder-list" id="folderList">
-                <li class="folder-item active" data-folder="all">
-                    <span><span class="folder-icon">📄</span>Alle Notizen</span>
-                    <span class="note-count" id="allCount">0</span>
-                </li>
-                <li class="folder-item" data-folder="favorites">
-                    <span><span class="folder-icon">⭐</span>Favoriten</span>
-                    <span class="note-count" id="favCount">0</span>
-                </li>
-                <li class="folder-item" data-folder="archive">
-                    <span><span class="folder-icon">📦</span>Archiv</span>
-                    <span class="note-count" id="archCount">0</span>
-                </li>
-            </ul>
-            
-            <button class="add-folder-btn" onclick="addNewFolder()">
-                + Neuer Ordner
-            </button>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Notizen durchsuchen..." id="searchInput">
-                </div>
-                <button class="add-note-btn" onclick="openNoteModal()">
-                    + Neue Notiz
-                </button>
+    <div class="game-container">
+        <h1>♔ Schach ♚</h1>
+        
+        <div class="game-info">
+            <div class="current-player">
+                Aktueller Spieler: <span id="current-player">Weiß</span>
             </div>
-
-            <div class="notes-container">
-                <div class="notes-grid" id="notesGrid">
-                    <!-- Notes will be rendered here -->
-                </div>
-                
-                <div class="empty-state" id="emptyState" style="display: none;">
-                    <div class="empty-state-icon">📝</div>
-                    <h3>Keine Notizen gefunden</h3>
-                    <p>Erstelle deine erste Notiz, um loszulegen!</p>
-                </div>
+            <div class="game-status" id="game-status">
+                Spiel läuft
             </div>
         </div>
-    </div>
 
-    <!-- Note Modal -->
-    <div class="modal" id="noteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Neue Notiz</h3>
-                <button class="close-btn" onclick="closeNoteModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label for="noteTitle">Titel</label>
-                    <input type="text" id="noteTitle" placeholder="Titel eingeben...">
-                </div>
-                
-                <div class="input-group">
-                    <label for="noteContent">Inhalt</label>
-                    <textarea id="noteContent" placeholder="Deine Notizen hier..."></textarea>
-                </div>
-                
-                <div class="input-group">
-                    <label for="noteTags">Tags (mit Komma getrennt)</label>
-                    <input type="text" id="noteTags" placeholder="tag1, tag2, tag3">
-                </div>
-                
-                <div class="input-group">
-                    <label for="noteFolder">Ordner</label>
-                    <select id="noteFolder">
-                        <option value="all">Alle Notizen</option>
-                        <option value="favorites">Favoriten</option>
-                        <option value="archive">Archiv</option>
-                    </select>
-                </div>
+        <div class="chessboard" id="chessboard"></div>
 
-                <!-- Drawing Canvas -->
-                <div class="canvas-container">
-                    <div class="canvas-toolbar">
-                        <span>Zeichnung:</span>
-                        <button class="tool-btn active" data-tool="pen" onclick="setTool('pen')">🖊️ Stift</button>
-                        <button class="tool-btn" data-tool="eraser" onclick="setTool('eraser')">🧹 Radierer</button>
-                        <input type="color" id="colorPicker" value="#000000">
-                        <input type="range" id="sizeSlider" min="1" max="20" value="3">
-                        <button class="tool-btn" onclick="clearCanvas()">🗑️ Löschen</button>
-                    </div>
-                    <canvas id="drawingCanvas" width="740" height="300"></canvas>
-                </div>
+        <div class="controls">
+            <button class="btn" onclick="resetGame()">Neues Spiel</button>
+            <button class="btn" onclick="undoMove()">Zug zurück</button>
+        </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="closeNoteModal()">Abbrechen</button>
-                    <button class="btn btn-secondary" onclick="deleteCurrentNote()" id="deleteBtn" style="display: none;">Löschen</button>
-                    <button class="btn btn-primary" onclick="saveNote()">Speichern</button>
-                </div>
-            </div>
+        <div class="move-history">
+            <h3>Zughistorie</h3>
+            <div class="move-list" id="move-history"></div>
         </div>
     </div>
 
     <script>
-        // Application State
-        let notes = JSON.parse(localStorage.getItem('notes') || '[]');
-        let folders = JSON.parse(localStorage.getItem('folders') || '["all", "favorites", "archive"]');
-        let currentFolder = 'all';
-        let currentNote = null;
-        let isDrawing = false;
-        let currentTool = 'pen';
+        // Unicode-Zeichen für Schachfiguren
+        const pieces = {
+            'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+            'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+        };
 
-        // Canvas setup
-        const canvas = document.getElementById('drawingCanvas');
-        const ctx = canvas.getContext('2d');
-        let lastX = 0;
-        let lastY = 0;
+        // Anfangsposition des Schachbretts
+        let board = [
+            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+        ];
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            setupCanvas();
-        });
+        let currentPlayer = 'white';
+        let selectedSquare = null;
+        let gameOver = false;
+        let moveHistory = [];
+        let boardHistory = [];
 
-        function initializeApp() {
-            renderFolders();
-            renderNotes();
-            updateNoteCounts();
-        }
+        function initializeBoard() {
+            const chessboard = document.getElementById('chessboard');
+            chessboard.innerHTML = '';
 
-        function setupEventListeners() {
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function(e) {
-                renderNotes(e.target.value);
-            });
+            for (let row = 0; row < 8; row++) {
+                const boardRow = document.createElement('div');
+                boardRow.className = 'board-row';
 
-            // Folder selection
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.folder-item')) {
-                    const folderItem = e.target.closest('.folder-item');
-                    const folder = folderItem.dataset.folder;
-                    selectFolder(folder);
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    square.onclick = () => handleSquareClick(row, col);
+
+                    const piece = board[row][col];
+                    if (piece) {
+                        const pieceElement = document.createElement('span');
+                        pieceElement.className = 'piece';
+                        pieceElement.textContent = pieces[piece];
+                        
+                        // Styling für schwarze vs weiße Figuren
+                        if (piece === piece.toLowerCase()) {
+                            // Schwarze Figuren
+                            pieceElement.style.color = '#2c3e50';
+                            pieceElement.style.textShadow = '1px 1px 2px rgba(0,0,0,0.3)';
+                        } else {
+                            // Weiße Figuren  
+                            pieceElement.style.color = '#ecf0f1';
+                            pieceElement.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+                        }
+                        
+                        square.appendChild(pieceElement);
+                    }
+
+                    boardRow.appendChild(square);
                 }
-            });
-        }
-
-        function setupCanvas() {
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-
-            // Touch events for mobile
-            canvas.addEventListener('touchstart', handleTouch);
-            canvas.addEventListener('touchmove', handleTouch);
-            canvas.addEventListener('touchend', stopDrawing);
-
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-        }
-
-        function handleTouch(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-
-            if (e.type === 'touchstart') {
-                startDrawing({ offsetX: x, offsetY: y });
-            } else if (e.type === 'touchmove') {
-                draw({ offsetX: x, offsetY: y });
+                chessboard.appendChild(boardRow);
             }
         }
 
-        function startDrawing(e) {
-            isDrawing = true;
-            [lastX, lastY] = [e.offsetX, e.offsetY];
-        }
+        function handleSquareClick(row, col) {
+            if (gameOver) return;
 
-        function draw(e) {
-            if (!isDrawing) return;
-
-            ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
-            ctx.strokeStyle = currentTool === 'eraser' ? 'rgba(0,0,0,1)' : document.getElementById('colorPicker').value;
-            ctx.lineWidth = document.getElementById('sizeSlider').value;
-
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(e.offsetX, e.offsetY);
-            ctx.stroke();
-
-            [lastX, lastY] = [e.offsetX, e.offsetY];
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
-        }
-
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function renderFolders() {
-            const folderList = document.getElementById('folderList');
-            const customFolders = folders.filter(f => !['all', 'favorites', 'archive'].includes(f));
+            const clickedSquare = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
             
-            // Add custom folders
-            customFolders.forEach(folder => {
-                const li = document.createElement('li');
-                li.className = 'folder-item';
-                li.dataset.folder = folder;
-                li.innerHTML = `
-                    <span><span class="folder-icon">📁</span>${folder}</span>
-                    <span class="note-count">0</span>
-                `;
-                folderList.appendChild(li);
-            });
-        }
-
-        function renderNotes(searchTerm = '') {
-            const notesGrid = document.getElementById('notesGrid');
-            const emptyState = document.getElementById('emptyState');
-            
-            let filteredNotes = notes.filter(note => {
-                const matchesFolder = currentFolder === 'all' || note.folder === currentFolder;
-                const matchesSearch = !searchTerm || 
-                    note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    note.content.toLowerCase().includes(searchTerm.toLowerCase());
-                return matchesFolder && matchesSearch;
-            });
-
-            if (filteredNotes.length === 0) {
-                notesGrid.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            notesGrid.style.display = 'grid';
-            emptyState.style.display = 'none';
-
-            notesGrid.innerHTML = filteredNotes.map(note => `
-                <div class="note-card" onclick="editNote('${note.id}')">
-                    <div class="note-title">${note.title}</div>
-                    <div class="note-content">${note.content || 'Keine Inhalte'}</div>
-                    <div class="note-meta">
-                        <span>${new Date(note.updatedAt).toLocaleDateString('de-DE')}</span>
-                        <div class="note-tags">
-                            ${note.tags.slice(0, 2).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectFolder(folder) {
-            currentFolder = folder;
-            document.querySelectorAll('.folder-item').forEach(item => item.classList.remove('active'));
-            document.querySelector(`[data-folder="${folder}"]`).classList.add('active');
-            renderNotes();
-        }
-
-        function updateNoteCounts() {
-            const allCount = notes.length;
-            const favCount = notes.filter(n => n.folder === 'favorites').length;
-            const archCount = notes.filter(n => n.folder === 'archive').length;
-
-            document.getElementById('allCount').textContent = allCount;
-            document.getElementById('favCount').textContent = favCount;
-            document.getElementById('archCount').textContent = archCount;
-
-            // Update custom folder counts
-            folders.forEach(folder => {
-                if (!['all', 'favorites', 'archive'].includes(folder)) {
-                    const count = notes.filter(n => n.folder === folder).length;
-                    const element = document.querySelector(`[data-folder="${folder}"] .note-count`);
-                    if (element) element.textContent = count;
+            if (selectedSquare) {
+                if (selectedSquare.row === row && selectedSquare.col === col) {
+                    // Gleiche Figur angeklickt - Auswahl aufheben
+                    clearSelection();
+                    return;
                 }
-            });
-        }
 
-        function openNoteModal(noteId = null) {
-            const modal = document.getElementById('noteModal');
-            const title = document.getElementById('modalTitle');
-            const deleteBtn = document.getElementById('deleteBtn');
-
-            if (noteId) {
-                currentNote = notes.find(n => n.id === noteId);
-                title.textContent = 'Notiz bearbeiten';
-                deleteBtn.style.display = 'inline-block';
-                
-                document.getElementById('noteTitle').value = currentNote.title;
-                document.getElementById('noteContent').value = currentNote.content;
-                document.getElementById('noteTags').value = currentNote.tags.join(', ');
-                document.getElementById('noteFolder').value = currentNote.folder;
-                
-                // Load drawing if exists
-                if (currentNote.drawing) {
-                    const img = new Image();
-                    img.onload = function() {
-                        clearCanvas();
-                        ctx.drawImage(img, 0, 0);
-                    };
-                    img.src = currentNote.drawing;
+                // Versuch einen Zug zu machen
+                if (isValidMove(selectedSquare.row, selectedSquare.col, row, col)) {
+                    makeMove(selectedSquare.row, selectedSquare.col, row, col);
+                    clearSelection();
+                    switchPlayer();
+                    checkGameState();
+                } else {
+                    // Ungültiger Zug - neue Figur auswählen wenn sie dem aktuellen Spieler gehört
+                    const piece = board[row][col];
+                    if (piece && isPlayerPiece(piece, currentPlayer)) {
+                        selectSquare(row, col);
+                    } else {
+                        clearSelection();
+                    }
                 }
             } else {
-                currentNote = null;
-                title.textContent = 'Neue Notiz';
-                deleteBtn.style.display = 'none';
-                
-                document.getElementById('noteTitle').value = '';
-                document.getElementById('noteContent').value = '';
-                document.getElementById('noteTags').value = '';
-                document.getElementById('noteFolder').value = currentFolder;
-                clearCanvas();
-            }
-
-            modal.classList.add('active');
-        }
-
-        function closeNoteModal() {
-            document.getElementById('noteModal').classList.remove('active');
-        }
-
-        function editNote(noteId) {
-            openNoteModal(noteId);
-        }
-
-        function saveNote() {
-            const title = document.getElementById('noteTitle').value.trim();
-            const content = document.getElementById('noteContent').value.trim();
-            const tags = document.getElementById('noteTags').value.split(',').map(t => t.trim()).filter(t => t);
-            const folder = document.getElementById('noteFolder').value;
-            const drawing = canvas.toDataURL();
-
-            if (!title) {
-                alert('Bitte gib einen Titel ein!');
-                return;
-            }
-
-            const noteData = {
-                id: currentNote?.id || Date.now().toString(),
-                title,
-                content,
-                tags,
-                folder,
-                drawing: drawing !== canvas.toDataURL() ? drawing : currentNote?.drawing || null,
-                createdAt: currentNote?.createdAt || new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
-            if (currentNote) {
-                const index = notes.findIndex(n => n.id === currentNote.id);
-                notes[index] = noteData;
-            } else {
-                notes.unshift(noteData);
-            }
-
-            localStorage.setItem('notes', JSON.stringify(notes));
-            closeNoteModal();
-            renderNotes();
-            updateNoteCounts();
-        }
-
-        function deleteCurrentNote() {
-            if (currentNote && confirm('Möchtest du diese Notiz wirklich löschen?')) {
-                notes = notes.filter(n => n.id !== currentNote.id);
-                localStorage.setItem('notes', JSON.stringify(notes));
-                closeNoteModal();
-                renderNotes();
-                updateNoteCounts();
-            }
-        }
-
-        function addNewFolder() {
-            const name = prompt('Ordnername:');
-            if (name && name.trim() && !folders.includes(name.trim())) {
-                folders.push(name.trim());
-                localStorage.setItem('folders', JSON.stringify(folders));
-                location.reload(); // Simple refresh to update UI
-            }
-        }
-
-        // Export functionality
-        function exportNote(noteId, format) {
-            const note = notes.find(n => n.id === noteId);
-            if (!note) return;
-
-            if (format === 'txt') {
-                const content = `${note.title}\n\n${note.content}\n\nTags: ${note.tags.join(', ')}`;
-                downloadFile(content, `${note.title}.txt`, 'text/plain');
-            } else if (format === 'json') {
-                downloadFile(JSON.stringify(note, null, 2), `${note.title}.json`, 'application/json');
-            }
-        }
-
-        function downloadFile(content, filename, mimeType) {
-            const blob = new Blob([content], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 'n') {
-                    e.preventDefault();
-                    openNoteModal();
-                } else if (e.key === 's' && document.getElementById('noteModal').classList.contains('active')) {
-                    e.preventDefault();
-                    saveNote();
+                // Neue Figur auswählen
+                const piece = board[row][col];
+                if (piece && isPlayerPiece(piece, currentPlayer)) {
+                    selectSquare(row, col);
                 }
             }
-        });
+        }
+
+        function selectSquare(row, col) {
+            clearSelection();
+            selectedSquare = { row, col };
+            
+            const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            square.classList.add('selected');
+            
+            showValidMoves(row, col);
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.square').forEach(square => {
+                square.classList.remove('selected', 'valid-move');
+            });
+            selectedSquare = null;
+        }
+
+        function showValidMoves(row, col) {
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    if (isValidMove(row, col, r, c)) {
+                        const square = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                        square.classList.add('valid-move');
+                    }
+                }
+            }
+        }
+
+        function isPlayerPiece(piece, player) {
+            if (player === 'white') {
+                return piece === piece.toUpperCase();
+            } else {
+                return piece === piece.toLowerCase();
+            }
+        }
+
+        function isValidMove(fromRow, fromCol, toRow, toCol) {
+            const piece = board[fromRow][fromCol];
+            const targetPiece = board[toRow][toCol];
+            
+            // Kann nicht eigene Figur schlagen
+            if (targetPiece && isPlayerPiece(piece, currentPlayer) === isPlayerPiece(targetPiece, currentPlayer)) {
+                return false;
+            }
+
+            // Spezifische Bewegungsregeln für jede Figur
+            const pieceType = piece.toLowerCase();
+            
+            switch (pieceType) {
+                case 'p':
+                    return isValidPawnMove(fromRow, fromCol, toRow, toCol, piece);
+                case 'r':
+                    return isValidRookMove(fromRow, fromCol, toRow, toCol);
+                case 'n':
+                    return isValidKnightMove(fromRow, fromCol, toRow, toCol);
+                case 'b':
+                    return isValidBishopMove(fromRow, fromCol, toRow, toCol);
+                case 'q':
+                    return isValidQueenMove(fromRow, fromCol, toRow, toCol);
+                case 'k':
+                    return isValidKingMove(fromRow, fromCol, toRow, toCol);
+                default:
+                    return false;
+            }
+        }
+
+        function isValidPawnMove(fromRow, fromCol, toRow, toCol, piece) {
+            const isWhite = piece === piece.toUpperCase();
+            const direction = isWhite ? -1 : 1;
+            const startRow = isWhite ? 6 : 1;
+            
+            // Vorwärts bewegen
+            if (fromCol === toCol) {
+                if (toRow === fromRow + direction && !board[toRow][toCol]) {
+                    return true;
+                }
+                if (fromRow === startRow && toRow === fromRow + 2 * direction && !board[toRow][toCol]) {
+                    return true;
+                }
+            }
+            
+            // Diagonal schlagen
+            if (Math.abs(fromCol - toCol) === 1 && toRow === fromRow + direction) {
+                return board[toRow][toCol] !== null;
+            }
+            
+            return false;
+        }
+
+        function isValidRookMove(fromRow, fromCol, toRow, toCol) {
+            if (fromRow !== toRow && fromCol !== toCol) return false;
+            return isPathClear(fromRow, fromCol, toRow, toCol);
+        }
+
+        function isValidKnightMove(fromRow, fromCol, toRow, toCol) {
+            const rowDiff = Math.abs(fromRow - toRow);
+            const colDiff = Math.abs(fromCol - toCol);
+            return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+        }
+
+        function isValidBishopMove(fromRow, fromCol, toRow, toCol) {
+            if (Math.abs(fromRow - toRow) !== Math.abs(fromCol - toCol)) return false;
+            return isPathClear(fromRow, fromCol, toRow, toCol);
+        }
+
+        function isValidQueenMove(fromRow, fromCol, toRow, toCol) {
+            return isValidRookMove(fromRow, fromCol, toRow, toCol) || 
+                   isValidBishopMove(fromRow, fromCol, toRow, toCol);
+        }
+
+        function isValidKingMove(fromRow, fromCol, toRow, toCol) {
+            const rowDiff = Math.abs(fromRow - toRow);
+            const colDiff = Math.abs(fromCol - toCol);
+            return rowDiff <= 1 && colDiff <= 1;
+        }
+
+        function isPathClear(fromRow, fromCol, toRow, toCol) {
+            const rowStep = toRow > fromRow ? 1 : toRow < fromRow ? -1 : 0;
+            const colStep = toCol > fromCol ? 1 : toCol < fromCol ? -1 : 0;
+            
+            let currentRow = fromRow + rowStep;
+            let currentCol = fromCol + colStep;
+            
+            while (currentRow !== toRow || currentCol !== toCol) {
+                if (board[currentRow][currentCol] !== null) {
+                    return false;
+                }
+                currentRow += rowStep;
+                currentCol += colStep;
+            }
+            
+            return true;
+        }
+
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            // Board-State für Undo speichern
+            boardHistory.push(JSON.parse(JSON.stringify(board)));
+            
+            const piece = board[fromRow][fromCol];
+            const capturedPiece = board[toRow][toCol];
+            
+            // Zug ausführen
+            board[toRow][toCol] = piece;
+            board[fromRow][fromCol] = null;
+            
+            // Zug zur Historie hinzufügen
+            const moveNotation = `${pieces[piece]} ${String.fromCharCode(97 + fromCol)}${8 - fromRow} → ${String.fromCharCode(97 + toCol)}${8 - toRow}`;
+            moveHistory.push({
+                notation: moveNotation,
+                player: currentPlayer,
+                captured: capturedPiece
+            });
+            
+            updateMoveHistory();
+            initializeBoard();
+        }
+
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+            document.getElementById('current-player').textContent = currentPlayer === 'white' ? 'Weiß' : 'Schwarz';
+        }
+
+        function checkGameState() {
+            const inCheck = isKingInCheck(currentPlayer);
+            const hasValidMoves = playerHasValidMoves(currentPlayer);
+            
+            if (inCheck) {
+                highlightKingInCheck(currentPlayer);
+                if (!hasValidMoves) {
+                    gameOver = true;
+                    const winner = currentPlayer === 'white' ? 'Schwarz' : 'Weiß';
+                    document.getElementById('game-status').textContent = `Schachmatt! ${winner} gewinnt!`;
+                    return;
+                } else {
+                    document.getElementById('game-status').textContent = 'Schach!';
+                }
+            } else if (!hasValidMoves) {
+                gameOver = true;
+                document.getElementById('game-status').textContent = 'Patt! Unentschieden!';
+                return;
+            } else {
+                document.getElementById('game-status').textContent = 'Spiel läuft';
+                clearCheckHighlight();
+            }
+        }
+
+        function isKingInCheck(player) {
+            const kingPos = findKing(player);
+            if (!kingPos) return false;
+            
+            // Prüfe ob eine gegnerische Figur den König angreifen kann
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const piece = board[row][col];
+                    if (piece && isPlayerPiece(piece, player === 'white' ? 'black' : 'white')) {
+                        if (isValidMove(row, col, kingPos.row, kingPos.col)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function findKing(player) {
+            const kingSymbol = player === 'white' ? 'K' : 'k';
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (board[row][col] === kingSymbol) {
+                        return { row, col };
+                    }
+                }
+            }
+            return null;
+        }
+
+        function playerHasValidMoves(player) {
+            for (let fromRow = 0; fromRow < 8; fromRow++) {
+                for (let fromCol = 0; fromCol < 8; fromCol++) {
+                    const piece = board[fromRow][fromCol];
+                    if (piece && isPlayerPiece(piece, player)) {
+                        for (let toRow = 0; toRow < 8; toRow++) {
+                            for (let toCol = 0; toCol < 8; toCol++) {
+                                if (isValidMove(fromRow, fromCol, toRow, toCol)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function highlightKingInCheck(player) {
+            const kingPos = findKing(player);
+            if (kingPos) {
+                const square = document.querySelector(`[data-row="${kingPos.row}"][data-col="${kingPos.col}"]`);
+                square.classList.add('in-check');
+            }
+        }
+
+        function clearCheckHighlight() {
+            document.querySelectorAll('.square').forEach(square => {
+                square.classList.remove('in-check');
+            });
+        }
+
+        function updateMoveHistory() {
+            const historyDiv = document.getElementById('move-history');
+            let historyText = '';
+            
+            for (let i = 0; i < moveHistory.length; i++) {
+                const move = moveHistory[i];
+                const moveNumber = Math.floor(i / 2) + 1;
+                
+                if (i % 2 === 0) {
+                    historyText += `${moveNumber}. ${move.notation}`;
+                } else {
+                    historyText += ` ${move.notation}\n`;
+                }
+            }
+            
+            historyDiv.textContent = historyText;
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+        }
+
+        function resetGame() {
+            board = [
+                ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, null],
+                ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+            ];
+            
+            currentPlayer = 'white';
+            selectedSquare = null;
+            gameOver = false;
+            moveHistory = [];
+            boardHistory = [];
+            
+            document.getElementById('current-player').textContent = 'Weiß';
+            document.getElementById('game-status').textContent = 'Spiel läuft';
+            document.getElementById('move-history').textContent = '';
+            
+            initializeBoard();
+        }
+
+        function undoMove() {
+            if (boardHistory.length === 0) return;
+            
+            board = boardHistory.pop();
+            moveHistory.pop();
+            
+            switchPlayer();
+            gameOver = false;
+            
+            document.getElementById('game-status').textContent = 'Spiel läuft';
+            updateMoveHistory();
+            initializeBoard();
+            clearSelection();
+        }
+
+        // Spiel initialisieren
+        initializeBoard();
     </script>
 </body>
 </html>
